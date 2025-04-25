@@ -12,11 +12,10 @@ interface BetData {
     betAmount: number;
     chip: number;
 }
-
-interface RoundResult {
-    1: string,
-    2: string,
-    winner: number
+interface GameResult {
+    1: string[],
+    2: string[],
+    winner: 1 | 2 | 3
 }
 
 type BetResult = {
@@ -136,7 +135,7 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
     return socket.emit("bet", { message: "Bet Placed successfully" });
 };
 
-export const settleBet = async (io: Server, result: RoundResult, lobbyId: number): Promise<void> => {
+export const settleBet = async (io: Server, result: GameResult, lobbyId: number): Promise<void> => {
     try {
 
         if (roundBets.length > 0) {
