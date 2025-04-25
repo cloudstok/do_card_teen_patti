@@ -30,14 +30,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cloudstok/cricket-war-mini-game.git"
+    "url": "git+https://github.com/cloudstok/do_card_teen_patti.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cloudstok/cricket-war-mini-game/issues"
+    "url": "https://github.com/cloudstok/do_card_teen_patti/issues"
   },
-  "homepage": "https://github.com/cloudstok/cricket-war-mini-game#readme",
+  "homepage": "https://github.com/cloudstok/do_card_teen_patti#readme",
   "description": ""
 }
