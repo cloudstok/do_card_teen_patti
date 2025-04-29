@@ -29,7 +29,7 @@ const initLobby = async (io: Server): Promise<void> => {
   const result = getResult();
   const end_delay = 3;
 
-  for (let x = 1; x <= start_delay; x++) {
+  for (let x = start_delay; x >= 0; x--) {
     io.emit('cards', `${lobbyId}:${x}:STARTING`);
     await sleep(1000);
   }
