@@ -4,6 +4,7 @@ import { createLogger } from '../../utilities/logger';
 import { setCurrentLobby } from '../bets/bets-session';
 import { getResult } from '../../utilities/helper-function';
 import { settleBet } from '../bets/bets-session';
+import { getPrevRoundResults, storeRoundResult } from './lobbies-result';
 
 const logger = createLogger('lobbies', 'jsonl');
 
@@ -53,7 +54,8 @@ const initLobby = async (io: Server): Promise<void> => {
     io.emit('cards', `${lobbyId}:${z}:ENDED`);
     await sleep(1000);
   }
-
+  storeRoundResult(result, lobbyId);
+  io.emit('lastRounds', getPrevRoundResults());
   const history = {
     time: new Date(),
     lobbyId,
