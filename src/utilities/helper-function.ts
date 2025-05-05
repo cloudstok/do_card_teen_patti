@@ -182,7 +182,6 @@ export const getResult = (): GameResult => {
   result[1] = concatRandomSuit(player1);
   result[2] = concatRandomSuit(player2);
   result['winner'] = compareCards(result[1], result[2]);
-  console.log('result', result);
   return result;
 };
 

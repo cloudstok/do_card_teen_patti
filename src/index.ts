@@ -9,7 +9,7 @@ import { createLogger } from './utilities/logger';
 import { checkDatabaseConnection, createTables } from './utilities/db-connection';
 import { initializeRedis } from './utilities/redis-connection';
 import { connect } from './utilities/amqp';
-import { apiRouter } from '../src/router/history-router';
+import { apiRouter } from './router/history-router';
 
 dotenv.config();
 const port = process.env.PORT || 4200;
