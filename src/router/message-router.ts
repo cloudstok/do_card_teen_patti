@@ -8,7 +8,7 @@ import { getPrevRoundResults } from "../module/lobbies/lobbies-result";
 const logger = createLogger('Event');
 
 export const messageRouter = async (io: Server, socket: Socket): Promise<void> => {
-    io.emit('lastRounds', getPrevRoundResults());
+    // io.emit('lastRounds', getPrevRoundResults());
     socket.on('message', (data: string) => {
         logger.info(data);
         const event = data.split(':');
