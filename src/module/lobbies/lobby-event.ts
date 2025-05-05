@@ -55,7 +55,7 @@ const initLobby = async (io: Server): Promise<void> => {
     await sleep(1000);
   }
   storeRoundResult(result, lobbyId);
-  io.emit('lastRounds', getPrevRoundResults());
+  // io.emit('lastRounds', getPrevRoundResults());
   const history = {
     time: new Date(),
     lobbyId,
