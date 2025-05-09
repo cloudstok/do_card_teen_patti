@@ -125,7 +125,7 @@ export const prepareDataForWebhook = async (betObj: BetData, key: WebhookKey): P
         if (key == 'DEBIT') return {
             ...baseData,
             amount: amountFormatted,
-            description: `${bet_amount} debited for two card teen patti game for Round ${id}`,
+            description: `${bet_amount} debited for Two Card Teen Patti game for Round ${id}`,
             bet_id,
             txn_type: 0
         }
@@ -133,7 +133,7 @@ export const prepareDataForWebhook = async (betObj: BetData, key: WebhookKey): P
             ...baseData,
             amount: winning_amount,
             txn_ref_id: txn_id,
-            description: `${winning_amount} credited for two card teen patti game for Round ${id}`,
+            description: `${winning_amount} credited for Two Card Teen Patti game for Round ${id}`,
             txn_type: 1
         }
         else return baseData;
