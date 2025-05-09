@@ -99,8 +99,8 @@ function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
   if (hand1.rank < hand2.rank) return 1;
   if (hand1.rank > hand2.rank) return 2;
 
-  if (hand1.highValue > hand2.highValue) return 1;
-  if (hand1.highValue < hand2.highValue) return 2;
+  if (hand1.highValue > hand2.highValue) return 2;
+  if (hand1.highValue < hand2.highValue) return 1;
 
   if (hand1.highSuit > hand2.highSuit) return 1;
   if (hand1.highSuit < hand2.highSuit) return 2;
