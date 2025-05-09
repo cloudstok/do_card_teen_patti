@@ -73,31 +73,6 @@ export const getHistory = async ({ user_id, operator_id, limit = 10 }: { user_id
 };
 
 
-// export const getmatchhistory = async ({ user_id, operator_id }: { user_id: string, operator_id: string }) => {
-//     try {
-//         const rows = await read(`
-//              SELECT 
-//             result
-//                  FROM 
-//                 settlement
-//             WHERE 
-//                 user_id = ? AND operator_id = ? 
-//             limit 3    
-//         `, [user_id, operator_id]);
-
-//         const winners = rows.map(row => {
-//             const parsed = JSON.parse(row.result);
-//             return parsed.winner;
-//         });
-//         return winners;
-
-//     } catch (error) {
-//         console.error(`Err while getting getmatchhistory data from table is:::`, error);
-//         return { error };
-
-//     };
-// }
-
 export const getMatchHistory = async (socket: Socket) => {
     try {
         const historyData = await read(`SELECT lobby_id, result, created_at FROM lobbies ORDER BY created_at DESC LIMIT 3`);
