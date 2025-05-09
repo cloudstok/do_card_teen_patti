@@ -53,7 +53,7 @@ export const getHistory = async ({ user_id, operator_id, limit = 10 }: { user_id
                     result.push({
                         stake,
                         odds,
-                        'p/l': win > 0 ? win : -stake,
+                        'p/l': bet.status === 'win' || bet.mult == 0.5 ? bet.winAmount - bet.betAmount : 0 - stake,
                         beton: bet.chip,
                         round_id: row.lobby_id,
                         winnerCards
