@@ -104,7 +104,7 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
 
     const webhookData = await updateBalanceFromAccount({
         id: lobbyData.lobbyId,
-        bet_amount: totalBetAmount,
+        bet_amount: totalBetAmount.toFixed(2),
         game_id,
         bet_id,
         ip,
@@ -132,7 +132,7 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
         balance: parsedPlayerDetails.balance
     });
 
-    return socket.emit("bet", { message: "Bet Placed successfully" });
+    return socket.emit("bet", { message: "Bet Placed Successfully" });
 };
 
 export const settleBet = async (io: Server, result: GameResult, lobbyId: number): Promise<void> => {
@@ -188,9 +188,9 @@ export const settleBet = async (io: Server, result: GameResult, lobbyId: number)
                             });
                     }
 
-                    io.to(socket_id).emit('settlement', { message: `You win ${winAmount}`, mywinningAmount: winAmount, status: 'WIN', roundResult: result, betResults, lobby_id });
+                    io.to(socket_id).emit('settlement', { message: `You Win ${winAmount}`, mywinningAmount: winAmount, status: 'WIN', roundResult: result, betResults, lobby_id });
                 } else {
-                    io.to(socket_id).emit('settlement', { message: `You loss ${totalBetAmount}`, lossAmount: totalBetAmount, status: 'LOSS', roundResult: result, betResults, lobby_id });
+                    io.to(socket_id).emit('settlement', { message: `You Loss ${totalBetAmount}`, lossAmount: totalBetAmount, status: 'LOSS', roundResult: result, betResults, lobby_id });
                 }
             }
 

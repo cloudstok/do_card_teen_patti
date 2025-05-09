@@ -99,8 +99,14 @@ function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
   if (hand1.rank < hand2.rank) return 1;
   if (hand1.rank > hand2.rank) return 2;
 
-  if (hand1.highValue > hand2.highValue) return 2;
-  if (hand1.highValue < hand2.highValue) return 1;
+  if (hand1.rank === 3 && hand2.rank === 3) {
+    if (hand1.highValue > hand2.highValue) return 2;
+    if (hand1.highValue < hand2.highValue) return 1;
+  }
+
+
+  if (hand1.highValue > hand2.highValue) return 1;
+  if (hand1.highValue < hand2.highValue) return 2;
 
   if (hand1.highSuit > hand2.highSuit) return 1;
   if (hand1.highSuit < hand2.highSuit) return 2;
@@ -121,6 +127,9 @@ export const getResult = (): GameResult => {
   const player2: string[] = getRandomCardValues();
   result[1] = concatRandomSuit(player1);
   result[2] = concatRandomSuit(player2);
+  // result[1] = ['4-D', '3-C'];
+  // result[2] = ['6-C', '5-H'];
+
 
   result['winner'] = compareCards(result[1], result[2]);
   return result;
