@@ -57,10 +57,25 @@ function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
     return { value, suit };
   }
 
+  // const sequenceRanks: Record<string, number> = {
+  //   "Q,K": 1, "A,2": 2, "J,Q": 3, "10,J": 4, "9,10": 5, "8,9": 6, "7,8": 7, "6,7": 8,
+  //   "5,6": 9, "4,5": 10, "3,4": 11, "2,3": 12
+  // };
   const sequenceRanks: Record<string, number> = {
-    "Q,K": 1, "A,2": 2, "J,Q": 3, "10,J": 4, "9,10": 5, "8,9": 6, "7,8": 7, "6,7": 8,
-    "5,6": 9, "4,5": 10, "3,4": 11, "2,3": 12
+    "Q,K": 1, "K,Q": 1,
+    "A,2": 2, "2,A": 2,
+    "J,Q": 3, "Q,J": 3,
+    "10,J": 4, "J,10": 4,
+    "9,10": 5, "10,9": 5,
+    "8,9": 6, "9,8": 6,
+    "7,8": 7, "8,7": 7,
+    "6,7": 8, "7,6": 8,
+    "5,6": 9, "6,5": 9,
+    "4,5": 10, "5,4": 10,
+    "3,4": 11, "4,3": 11,
+    "2,3": 12, "3,2": 12
   };
+
 
   function evaluateHand(cards: string[]): { rank: number, highValue: number, highSuit: number } {
     const c1 = getCardInfo(cards[0]);
@@ -127,11 +142,12 @@ export const getResult = (): GameResult => {
   const player2: string[] = getRandomCardValues();
   result[1] = concatRandomSuit(player1);
   result[2] = concatRandomSuit(player2);
-  // result[1] = ['4-D', '3-C'];
-  // result[2] = ['6-C', '5-H'];
+  // result[1] = ['7-C', '9-C'];
+  // result[2] = ['A-C', '2-S'];
 
 
   result['winner'] = compareCards(result[1], result[2]);
+  // console.log('result', result);
   return result;
 };
 
