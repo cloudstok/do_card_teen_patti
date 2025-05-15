@@ -164,10 +164,10 @@ export const getResult = (): GameResult => {
 
   const player1: string[] = getRandomCardValues();
   const player2: string[] = getRandomCardValues();
-  // result[1] = concatRandomSuit(player1);
-  // result[2] = concatRandomSuit(player2);
-  result[1] = ['A-D', '10-S'];
-  result[2] = ['10-S', 'A-D'];
+  result[1] = concatRandomSuit(player1);
+  result[2] = concatRandomSuit(player2);
+  // result[1] = ['A-D', '10-S'];
+  // result[2] = ['10-S', 'A-D'];
 
 
   result['winner'] = compareCards(result[1], result[2]);
