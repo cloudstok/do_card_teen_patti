@@ -97,32 +97,36 @@ apiRouter.get('/bet/detail', async (req: any, res: any) => {
         const roundResult = JSON.parse(userBet.result);
         const userBets = JSON.parse(userBet.userBets);
 
-        const finalData: any = {};
-        finalData['lobby_id'] = userBet.lobby_id;
-        finalData['user_id'] = userBet.user_id;
-        finalData['operator_id'] = userBet.operator_id;
-        finalData['total_bet_amount'] = userBet.bet_amount;
+        const finalData: any = {
+            lobby_id: userBet.lobby_id,
+            user_id: userBet.user_id,
+            operator_id: userBet.operator_id,
+            total_bet_amount: parseFloat(userBet.bet_amount).toFixed(2),
+            result_card: roundResult.result_card,
+            bet_time: userBet.created_at,
 
-        let winnerName = '';
-        if (roundResult.winner === 1) {
-            winnerName = 'playerA';
-        } else if (roundResult.winner === 2) {
-            winnerName = 'playerB';
-        } else if (roundResult.winner === 3) {
-            winnerName = 'draw';
-        }
-        finalData['winner'] = winnerName;
-
-        finalData['result_cards'] = {
-            playerA: roundResult["1"],
-            playerB: roundResult["2"]
         };
 
-        finalData['bet_time'] = userBet.created_at;
+        // Determine winner
+        let winner = '';
+        if (roundResult.winner === 1) {
+            winner = 'playerA';
+        } else if (roundResult.winner === 2) {
+            winner = 'playerB';
+        } else if (roundResult.winner === 3) {
+            winner = 'draw';
+        }
+        finalData['winner'] = winner;
 
+        // Bet mapping with chip conversion
         userBets.forEach((e: any, i: number) => {
+            let mappedChip = '';
+            if (e.chip == 1) mappedChip = 'playerA';
+            else if (e.chip == 2) mappedChip = 'playerB';
+            else mappedChip = e.chip.toString();
+
             finalData[`Bet${i + 1}`] = {
-                chip: e.chip.toString(),
+                chip: mappedChip,
                 bet_amount: e.betAmount,
                 win_amount: e.winAmount,
                 multiplier: e.status === 'win' ? e.mult : 0,
@@ -130,9 +134,10 @@ apiRouter.get('/bet/detail', async (req: any, res: any) => {
             };
         });
 
-        return res.status(200).send({ status: true, data: finalData });
+        return res.status(200).json({ status: true, data: finalData });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+

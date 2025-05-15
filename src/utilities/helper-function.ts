@@ -164,10 +164,10 @@ export const getResult = (): GameResult => {
 
   const player1: string[] = getRandomCardValues();
   const player2: string[] = getRandomCardValues();
-  result[1] = concatRandomSuit(player1);
-  result[2] = concatRandomSuit(player2);
-  // result[1] = ['A-D', '10-S'];
-  // result[2] = ['A-S', '3-C'];
+  // result[1] = concatRandomSuit(player1);
+  // result[2] = concatRandomSuit(player2);
+  result[1] = ['A-D', '10-S'];
+  result[2] = ['10-S', 'A-D'];
 
 
   result['winner'] = compareCards(result[1], result[2]);
@@ -189,6 +189,7 @@ type BetResult = {
 
 
 export const getBetResult = (betAmount: number, chip: number, result: number): BetResult => {
+  console.log({ betAmount, chip, result });
   const resultData: BetResult = {
     chip,
     betAmount,
@@ -197,12 +198,13 @@ export const getBetResult = (betAmount: number, chip: number, result: number): B
     status: 'loss'
   };
 
-  if (chip === result) {
+  if (resultData.mult) {
     resultData.status = 'win';
     resultData.winAmount = betAmount * resultData.mult;
   } else {
     resultData.status = 'loss';
     resultData.winAmount = 0;
   }
+  console.log({ resultData });
   return resultData;
 };
