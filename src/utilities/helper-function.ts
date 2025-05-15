@@ -48,36 +48,32 @@ function concatRandomSuit(val: string[]): string[] {
   return [`${val[0]}-${suits[Math.floor(Math.random() * 4)]}`, `${val[1]}-${suits[Math.floor(Math.random() * 4)]}`]
 }
 
+
 function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
   const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-  const suits = ['D', 'C', 'H', 'S']; // Lowest to highest
+  const suits = ['D', 'C', 'H', 'S']; // D < C < H < S
 
   function getCardInfo(card: string) {
     const [value, suit] = card.split('-');
     return { value, suit };
   }
 
-  // const sequenceRanks: Record<string, number> = {
-  //   "Q,K": 1, "A,2": 2, "J,Q": 3, "10,J": 4, "9,10": 5, "8,9": 6, "7,8": 7, "6,7": 8,
-  //   "5,6": 9, "4,5": 10, "3,4": 11, "2,3": 12
-  // };
-  const sequenceRanks: Record<string, number> = {
-    "Q,K": 1, "K,Q": 1,
-    "A,2": 2, "2,A": 2,
-    "J,Q": 3, "Q,J": 3,
-    "10,J": 4, "J,10": 4,
-    "9,10": 5, "10,9": 5,
-    "8,9": 6, "9,8": 6,
-    "7,8": 7, "8,7": 7,
-    "6,7": 8, "7,6": 8,
-    "5,6": 9, "6,5": 9,
-    "4,5": 10, "5,4": 10,
-    "3,4": 11, "4,3": 11,
-    "2,3": 12, "3,2": 12
-  };
+  const sequenceRanks = new Set([
+    "2,3",
+    "3,4",
+    "4,5",
+    "5,6",
+    "6,7",
+    "7,8",
+    "8,9",
+    "9,10",
+    "10,J",
+    "J,Q",
+    "Q,K",
+    "A,2" // special case
+  ]);
 
-
-  function evaluateHand(cards: string[]): { rank: number, highValue: number, highSuit: number } {
+  function evaluateHand(cards: string[]) {
     const c1 = getCardInfo(cards[0]);
     const c2 = getCardInfo(cards[1]);
 
@@ -86,26 +82,55 @@ function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
     const s1 = suits.indexOf(c1.suit);
     const s2 = suits.indexOf(c2.suit);
 
-    // Trio
+    const cardsSorted = [
+      { value: v1, suit: s1 },
+      { value: v2, suit: s2 }
+    ].sort((a, b) => b.value - a.value);
+
+    const valuePair = [c1.value, c2.value].sort((a, b) => values.indexOf(a) - values.indexOf(b)).join(',');
+
+    // Trio (same number)
     if (c1.value === c2.value) {
-      return { rank: 1, highValue: v1, highSuit: Math.max(s1, s2) };
+      return {
+        rank: 1,
+        highValue: v1,
+        secondHighValue: v2,
+        highSuit: Math.max(s1, s2),
+        secondHighSuit: Math.min(s1, s2)
+      };
     }
 
-    const sortedPair = [c1.value, c2.value].sort((a, b) => values.indexOf(a) - values.indexOf(b)).join(',');
-
-    if (sequenceRanks[sortedPair] !== undefined) {
-      const seqRank = sequenceRanks[sortedPair];
+    // Sequence or Pure Sequence
+    if (sequenceRanks.has(valuePair)) {
       const baseRank = (c1.suit === c2.suit) ? 2 : 3;
-      return { rank: baseRank, highValue: seqRank, highSuit: Math.max(s1, s2) };
+      return {
+        rank: baseRank,
+        highValue: cardsSorted[0].value,
+        secondHighValue: cardsSorted[1].value,
+        highSuit: cardsSorted[0].suit,
+        secondHighSuit: cardsSorted[1].suit
+      };
     }
 
-    // Colour
+    // Colour (same suit)
     if (c1.suit === c2.suit) {
-      return { rank: 4, highValue: Math.max(v1, v2), highSuit: Math.max(s1, s2) };
+      return {
+        rank: 4,
+        highValue: cardsSorted[0].value,
+        secondHighValue: cardsSorted[1].value,
+        highSuit: cardsSorted[0].suit,
+        secondHighSuit: cardsSorted[1].suit
+      };
     }
 
-    // High Card
-    return { rank: 5, highValue: Math.max(v1, v2), highSuit: Math.max(s1, s2) };
+    // High Card (default)
+    return {
+      rank: 5,
+      highValue: cardsSorted[0].value,
+      secondHighValue: cardsSorted[1].value,
+      highSuit: cardsSorted[0].suit,
+      secondHighSuit: cardsSorted[1].suit
+    };
   }
 
   const hand1 = evaluateHand(card1);
@@ -114,21 +139,20 @@ function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
   if (hand1.rank < hand2.rank) return 1;
   if (hand1.rank > hand2.rank) return 2;
 
-  if (hand1.rank === 3 && hand2.rank === 3) {
-    if (hand1.highValue > hand2.highValue) return 2;
-    if (hand1.highValue < hand2.highValue) return 1;
-  }
-
-
   if (hand1.highValue > hand2.highValue) return 1;
   if (hand1.highValue < hand2.highValue) return 2;
 
   if (hand1.highSuit > hand2.highSuit) return 1;
   if (hand1.highSuit < hand2.highSuit) return 2;
 
-  return 3; // tie
-}
+  if (hand1.secondHighValue > hand2.secondHighValue) return 1;
+  if (hand1.secondHighValue < hand2.secondHighValue) return 2;
 
+  if (hand1.secondHighSuit > hand2.secondHighSuit) return 1;
+  if (hand1.secondHighSuit < hand2.secondHighSuit) return 2;
+
+  return 3; // Tie
+}
 
 export const getResult = (): GameResult => {
 
@@ -142,12 +166,16 @@ export const getResult = (): GameResult => {
   const player2: string[] = getRandomCardValues();
   result[1] = concatRandomSuit(player1);
   result[2] = concatRandomSuit(player2);
-  // result[1] = ['7-C', '9-C'];
-  // result[2] = ['A-C', '2-S'];
+  // result[1] = ['A-D', '10-S'];
+  // result[2] = ['A-S', '3-C'];
 
 
   result['winner'] = compareCards(result[1], result[2]);
-  // console.log('result', result);
+
+  console.log('result', result);
+  // Rank: Pair > Pure Sequence > Sequence > Colour > High Card
+
+
   return result;
 };
 
@@ -165,14 +193,16 @@ export const getBetResult = (betAmount: number, chip: number, result: number): B
     chip,
     betAmount,
     winAmount: 0,
-    mult: (chip === 1 || chip === 2) ? 1.98 : 0.5,
+    mult: (result == 1 || result == 2) ? 1.98 : result === 3 ? 0.5 : 0,
     status: 'loss'
   };
 
   if (chip === result) {
     resultData.status = 'win';
     resultData.winAmount = betAmount * resultData.mult;
+  } else {
+    resultData.status = 'loss';
+    resultData.winAmount = 0;
   }
-
   return resultData;
 };
