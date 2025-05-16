@@ -154,7 +154,7 @@ export const settleBet = async (io: Server, result: GameResult, lobbyId: number)
                     const roundResult = getBetResult(betAmount, chip, result.winner);
                     betResults.push(roundResult);
                     if (roundResult.mult > 0) {
-                        totalMultiplier += roundResult.mult;
+                        totalMultiplier += roundResult.status == 'win' ? roundResult.mult : 0.00;
                         finalAmount += roundResult.winAmount;
                     }
                 });

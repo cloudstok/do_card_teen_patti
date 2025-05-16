@@ -1,3 +1,4 @@
+import { appConfig } from './app-config';
 import { createLogger } from './logger';
 import { Socket } from 'socket.io';
 
@@ -190,21 +191,25 @@ type BetResult = {
 
 export const getBetResult = (betAmount: number, chip: number, result: number): BetResult => {
   console.log({ betAmount, chip, result });
+
   const resultData: BetResult = {
     chip,
     betAmount,
     winAmount: 0,
-    mult: (result == 1 || result == 2) ? 1.98 : result === 3 ? 0.5 : 0,
+    mult: 1.98,
     status: 'loss'
   };
 
-  if (resultData.mult) {
+  if ((chip === 1 || chip === 2) && result === 3) {
+    resultData.mult = 0.5;
     resultData.status = 'win';
-    resultData.winAmount = betAmount * resultData.mult;
-  } else {
-    resultData.status = 'loss';
-    resultData.winAmount = 0;
+    resultData.winAmount = Math.min(betAmount * resultData.mult, appConfig.maxCashoutAmount);
+  } else if (chip === result && (result === 1 || result === 2)) {
+    resultData.mult = 1.98;
+    resultData.status = 'win';
+    resultData.winAmount = Math.min(betAmount * resultData.mult, appConfig.maxCashoutAmount);
   }
+
   console.log({ resultData });
   return resultData;
 };
