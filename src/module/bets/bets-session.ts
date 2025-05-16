@@ -178,14 +178,16 @@ export const settleBet = async (io: Server, result: GameResult, lobbyId: number)
                     const cachedPlayerDetails = await getCache(`PL:${socket_id}`);
                     if (cachedPlayerDetails) {
                         const parsedPlayerDetails = JSON.parse(cachedPlayerDetails);
-                        parsedPlayerDetails.balance = Number(parsedPlayerDetails.balance + winAmount).toFixed(2);
+                        parsedPlayerDetails.balance = Number(Number(parsedPlayerDetails.balance) + finalAmount).toFixed(2);
                         await setCache(`PL:${socket_id}`, JSON.stringify(parsedPlayerDetails));
-                        io.to(socket_id).emit("info",
-                            {
-                                user_id,
-                                operator_id,
-                                balance: parsedPlayerDetails.balance
-                            });
+                        setTimeout(() => {
+                            io.to(socket_id).emit("info",
+                                {
+                                    user_id,
+                                    operator_id,
+                                    balance: parsedPlayerDetails.balance
+                                });
+                        }, 200);
                     }
 
                     io.to(socket_id).emit('settlement', { message: `You Win ${winAmount}`, mywinningAmount: winAmount, status: 'WIN', roundResult: result, betResults, lobby_id });
