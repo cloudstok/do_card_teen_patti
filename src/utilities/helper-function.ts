@@ -196,15 +196,16 @@ export const getBetResult = (betAmount: number, chip: number, result: number): B
     chip,
     betAmount,
     winAmount: 0,
-    mult: 1.98,
+    mult: result == 3 ? 0.5 : 1.98,
     status: 'loss'
   };
 
-  if ((chip === 1 || chip === 2) && result === 3) {
+  if (result == 3) {
     resultData.mult = 0.5;
-    resultData.status = 'win';
+    resultData.status = 'loss';
     resultData.winAmount = Math.min(betAmount * resultData.mult, appConfig.maxCashoutAmount);
-  } else if (chip === result && (result === 1 || result === 2)) {
+  } 
+  if (chip === result) {
     resultData.mult = 1.98;
     resultData.status = 'win';
     resultData.winAmount = Math.min(betAmount * resultData.mult, appConfig.maxCashoutAmount);
