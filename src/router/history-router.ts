@@ -73,9 +73,11 @@ export const getHistory = async ({ user_id, operator_id, limit = 10 }: { user_id
 };
 
 
-export const getMatchHistory = async (socket: Socket) => {
+export const getMatchHistory = async (socket: Socket, userId: string, operator_id: string) => {
     try {
         const historyData = await read(`SELECT lobby_id, result, created_at FROM lobbies ORDER BY created_at DESC LIMIT 3`);
+        const getLastWin = await read(`SELECT win_amount FROM settlement WHERE user_id = ? and operator_id = ? and win_amount > 0 ORDER BY created_at DESC LIMIT 1`, [decodeURIComponent(userId), operator_id]);
+        if(getLastWin && getLastWin.length > 0) socket.emit('lastWin', { lastWin: getLastWin[0].win_amount});
         return socket.emit('historyData', historyData);
     } catch (err) {
         console.error(`Err while getting user history data is:::`, err);

@@ -39,7 +39,7 @@ export const initSocket = (io: Server): void => {
 
     await setCache(`PL:${socket.id}`, JSON.stringify({ ...userData, socketId: socket.id }), 3600);
 
-    await getMatchHistory(socket);
+    await getMatchHistory(socket, userData.userId, userData.operatorId);
     messageRouter(io, socket);
 
     socket.on('disconnect', async () => {
