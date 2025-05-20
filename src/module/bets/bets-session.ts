@@ -86,11 +86,11 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
     });
 
     if (isBetInvalid) {
-        return logEventAndEmitResponse(socket, betObj, 'Invalid Bet', 'bet');
+        return logEventAndEmitResponse(socket, betObj, 'INVALID BET', 'bet');
     }
 
     if (totalBetAmount > Number(balance)) {
-        return logEventAndEmitResponse(socket, betObj, 'Insufficient Balance', 'bet');
+        return logEventAndEmitResponse(socket, betObj, 'INSUFFICIENT BALANCE', 'bet');
     }
 
     const ip = getUserIP(socket);
@@ -111,7 +111,7 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
         user_id: userId
     }, "DEBIT", { game_id, operatorId, token });
 
-    if (!webhookData.status) return socket.emit("betError", "Bet Cancelled By Upstream Server.");
+    if (!webhookData.status) return socket.emit("betError", "BET CANCELLED BY UPSTREAM SERVER.");
     if (webhookData.txn_id) betObj.txn_id = webhookData.txn_id;
 
     roundBets.push(betObj);
