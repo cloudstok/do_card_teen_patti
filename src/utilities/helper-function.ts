@@ -173,7 +173,6 @@ export const getResult = (): GameResult => {
 
   result['winner'] = compareCards(result[1], result[2]);
 
-  console.log('result', result);
   // Rank: Pair > Pure Sequence > Sequence > Colour > High Card
 
 
@@ -190,7 +189,6 @@ type BetResult = {
 
 
 export const getBetResult = (betAmount: number, chip: number, result: number): BetResult => {
-  console.log({ betAmount, chip, result });
 
   const resultData: BetResult = {
     chip,
@@ -204,13 +202,12 @@ export const getBetResult = (betAmount: number, chip: number, result: number): B
     resultData.mult = 0.5;
     resultData.status = 'loss';
     resultData.winAmount = Math.min(betAmount * resultData.mult, appConfig.maxCashoutAmount);
-  } 
+  }
   if (chip === result) {
     resultData.mult = 1.98;
     resultData.status = 'win';
     resultData.winAmount = Math.min(betAmount * resultData.mult, appConfig.maxCashoutAmount);
   }
 
-  console.log({ resultData });
   return resultData;
 };
