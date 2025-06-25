@@ -17,7 +17,6 @@ export const insertLobbies = async (data: LobbyData): Promise<void> => {
   if (typeof lobbyInfo.result === 'object') {
         lobbyInfo.result = JSON.stringify(lobbyInfo.result);
       }
-    console.log("Inserting lobby data:", Object.values(lobbyInfo));
     await write(SQL_INSERT_LOBBIES, Object.values(lobbyInfo));
   } catch (err) {
     console.error(err);
