@@ -26,29 +26,47 @@ export const getUserIP = (socket: any): string => {
   return socket.handshake.address || "";
 };
 
+const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const suits = ['D', 'H', 'C', 'S'];
 
-function getRandomCardValues(): string[] {
-  const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-  const card1 = values[Math.floor(Math.random() * values.length)];
-  const card2 = values[Math.floor(Math.random() * values.length)];
-  return [card1, card2];
+function generateDeck(): string[] {
+  const deck: string[] = []
+  for (let i = 0; i < suits.length; i++) {
+    for (let j = 0; j < values.length; j++) {
+      deck.push(`${values[j]}-${suits[i]}`)
+    }
+  }
+  return shuffleDeck(deck);
+}
+
+function shuffleDeck(deck: string[]): string[] {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
 }
 
 
+function getRandomCardValues(): { player1: string[], player2: string[] } {
 
+  const shuffledDeck = generateDeck().slice(0, 4);
+  const player1: string[] = [];
+  const player2: string[] = []
+
+  shuffledDeck.forEach((card, i) => {
+    if (i % 2 == 0) player1.push(card)
+    else player2.push(card)
+  });
+
+  return { player1, player2 }
+}
 
 interface GameResult {
   1: string[],
   2: string[],
   winner: 1 | 2 | 3
 }
-
-
-function concatRandomSuit(val: string[]): string[] {
-  const suits = ['D', 'H', 'C', 'S'];
-  return [`${val[0]}-${suits[Math.floor(Math.random() * 4)]}`, `${val[1]}-${suits[Math.floor(Math.random() * 4)]}`]
-}
-
 
 function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
   const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -71,7 +89,7 @@ function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
     "10,J",
     "J,Q",
     "Q,K",
-    "A,2" // special case
+    "2,A" // special case
   ]);
 
   function evaluateHand(cards: string[]) {
@@ -143,11 +161,11 @@ function compareCards(card1: string[], card2: string[]): 1 | 2 | 3 {
   if (hand1.highValue > hand2.highValue) return 1;
   if (hand1.highValue < hand2.highValue) return 2;
 
-  if (hand1.highSuit > hand2.highSuit) return 1;
-  if (hand1.highSuit < hand2.highSuit) return 2;
-
   if (hand1.secondHighValue > hand2.secondHighValue) return 1;
   if (hand1.secondHighValue < hand2.secondHighValue) return 2;
+
+  if (hand1.highSuit > hand2.highSuit) return 1;
+  if (hand1.highSuit < hand2.highSuit) return 2;
 
   if (hand1.secondHighSuit > hand2.secondHighSuit) return 1;
   if (hand1.secondHighSuit < hand2.secondHighSuit) return 2;
@@ -160,16 +178,12 @@ export const getResult = (): GameResult => {
   const result: GameResult = {
     1: [],
     2: [],
-    winner: 1
+    winner: 3
   };
 
-  const player1: string[] = getRandomCardValues();
-  const player2: string[] = getRandomCardValues();
-  result[1] = concatRandomSuit(player1);
-  result[2] = concatRandomSuit(player2);
-  // result[1] = ['A-D', '10-S'];
-  // result[2] = ['10-S', 'A-D'];
-
+  const { player1, player2 } = getRandomCardValues();
+  result[1] = player1;
+  result[2] = player2;
 
   result['winner'] = compareCards(result[1], result[2]);
 
