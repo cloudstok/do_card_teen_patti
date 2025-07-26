@@ -36,7 +36,7 @@ function generateDeck(): string[] {
       deck.push(`${values[j]}-${suits[i]}`)
     }
   }
-  return shuffleDeck(deck);
+  return deck;
 }
 
 function shuffleDeck(deck: string[]): string[] {
@@ -50,14 +50,18 @@ function shuffleDeck(deck: string[]): string[] {
 
 function getRandomCardValues(): { player1: string[], player2: string[] } {
 
-  const shuffledDeck = generateDeck().slice(0, 4);
-  const player1: string[] = [];
-  const player2: string[] = []
+  let shuffledDeck: string[] = shuffleDeck(generateDeck());
 
-  shuffledDeck.forEach((card, i) => {
-    if (i % 2 == 0) player1.push(card)
-    else player2.push(card)
-  });
+  const extractedCards: string[] = [];
+
+  while (extractedCards.length < 4) {
+    let randomIdx = Math.floor(Math.random() * shuffleDeck.length)
+    extractedCards.push(shuffledDeck[randomIdx]);
+    shuffledDeck.splice(randomIdx, 1);
+  }
+
+  const player1 = [...extractedCards].slice(0, 2);
+  const player2 = [...extractedCards].slice(2, 4);
 
   return { player1, player2 }
 }
