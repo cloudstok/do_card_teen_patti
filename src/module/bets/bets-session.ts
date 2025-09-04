@@ -172,7 +172,7 @@ export const settleBet = async (io: Server, result: GameResult, lobbyId: number)
 
                 if (finalAmount > 0) {
                     const winAmount = Number(finalAmount).toFixed(2);
-                    const webhookData = await updateBalanceFromAccount({ user_id, winning_amount: winAmount, id: lobbyId, game_id, txn_id: txn_id, ip }, 'CREDIT', { game_id, operatorId: operator_id, token });
+                    const webhookData = await updateBalanceFromAccount({ user_id, winning_amount: winAmount, id: lobby_id, game_id, txn_id: txn_id, ip }, 'CREDIT', { game_id, operatorId: operator_id, token });
                     if (!webhookData.status) console.error('Credit Txn Failed');
 
                     const cachedPlayerDetails = await getCache(`PL:${socket_id}`);
